@@ -1,3 +1,8 @@
-variable "name" { type = string }
-variable "location" { type = string }
-variable "tags" { type = map(string) default = {} }
+variable "rgs" {
+  type = map(object({
+    name       = string
+    location   = string
+    managed_by = optional(string)
+    tags       = optional(map(string))
+  }))
+}
