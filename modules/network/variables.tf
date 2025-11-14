@@ -1,8 +1,20 @@
-variable "rg_name" { type = string }
-variable "location" { type = string }
-variable "vnet_name" { type = string }
-variable "address_space" { type = list(string) }
-variable "subnets" {
-  type = list(object({ name = string, prefix = string, role = string }))
+variable "network" {
+  type = map(obects({
+    name          = string
+    location      = string
+    rg_name       = string
+    address_space = list(string)
+    tags          = optional(string)
+    subnets = optional(list(object({
+      name             = string
+      address_prefixes = list(string)
+    }))) }
+
+  ))
 }
-variable "nsg_name" { type = string }
+
+# variable "nsg" {
+#   type = optional(list(object({
+#     name = string
+#   })))
+# } 

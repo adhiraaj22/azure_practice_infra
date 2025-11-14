@@ -1,29 +1,32 @@
-resource "azurerm_virtual_network" "this" {
-  name                = var.vnet_name
-  address_space       = var.address_space
-  location            = var.location
-  resource_group_name = var.rg_name
+resource "azurerm_virtual_network" "virtual_network" {
+  for_each            = var.network
+  name                = each.value.name
+  address_space       = each.value.address_space
+  location            = each.value.location
+  resource_group_name = each.value.rg_name
+
+
+  # dynamic creation of subnets
+  dynamic "subnets" {
+    for_each = each.value.subnets
+    content {
+      name             = subnets.value.name
+      address_prefixes = subnets.value.address_prefixes
+    }
+  }
 }
 
-# dynamic creation of subnets
-resource "azurerm_subnet" "subnets" {
-  for_each = { for s in var.subnets : s.name => s }
-  name                 = each.value.name
-  resource_group_name  = var.rg_name
-  virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = [each.value.prefix]
-}
+# # NSG
+# resource "azurerm_network_security_group" "nsg" {
+#   for_each            = var.nsg
+#   name                = each.value.name
+#   location            = each.value.location
+#   resource_group_name = each.value.rg_name
+# }
 
-# NSG
-resource "azurerm_network_security_group" "this" {
-  name                = var.nsg_name
-  location            = var.location
-  resource_group_name = var.rg_name
-}
-
-# associate NSG to subnets using dynamic for_each
-resource "azurerm_subnet_network_security_group_association" "assoc" {
-  for_each = azurerm_subnet.subnets
-  subnet_id                 = each.value.id
-  network_security_group_id = azurerm_network_security_group.this.id
-}
+# # associate NSG to subnets using dynamic for_each
+# resource "azurerm_subnet_network_security_group_association" "assoc" {
+#   for_each                  = azurerm_subnet.subnets
+#   subnet_id                 = each.value.id
+#   network_security_group_id = azurerm_network_security_group.this.id
+# }
