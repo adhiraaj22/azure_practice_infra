@@ -1,0 +1,104 @@
+ branches:
+   include:
+     - main
+     - feature/*
+pool:
+  name: infra-pool
+
+variables:
+  svc: 'pipelinesvc'
+  stgname: 'stgforall'
+  containername: 'mycontainer'
+  statefile: 'raman.tfstate'
+  workingDir: '$(System.DefaultWorkingDirectory)/environment/dev'
+
+
+stages:
+  - stage: Build
+    jobs:
+      - job: terraforminitandplan
+        displayName: terraform init
+        steps:
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: 'latest'
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(workingDir)'
+              backendAzureRmUseEntraIdForAuthentication: false
+              backendServiceArm: '$(svc)'
+              backendAzureRmStorageAccountName: '$(stgname)'
+              backendAzureRmContainerName: '$(containername)'
+              backendAzureRmKey: '$(statefile)'
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(workingDir)'
+          
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: '$(svc)'
+              workingDirectory: '$(workingDir)'
+          
+  - stage: Scanning
+    dependsOn: Build
+    displayName: scanning
+    jobs:
+      - job: tfscanning
+        displayName: scanning for code
+        pool: 
+          name: infra-pool
+        steps:
+          - task: tfsec@1
+            inputs:
+              version: 'v1.26.0'
+              dir: '$(System.DefaultWorkingDirectory)/environment/dev'
+      
+      - job: TfLint
+        displayName: tflintforcode
+        pool: 
+          name: infra-pool
+        steps:
+          - task: CmdLine@2
+            inputs:
+              script: |
+                echo "Installing TFLint..."
+                curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+                echo "Running TFLint..."
+                tflint --init
+                tflint '$(workingDir)'   
+      - job: ManualValidation
+        displayName: manual validation
+        pool: server
+        steps:
+          - task: ManualValidation@1
+            inputs:
+              notifyUsers: 'brijesh.zte@gmail.com'
+     
+      - job: TerraformApply
+        displayName: Terraform Apply
+        dependsOn: ManualValidation
+        pool: infra-pool
+        steps:
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(workingDir)'
+              backendAzureRmUseEntraIdForAuthentication: false
+              backendServiceArm: '$(svc)'
+              backendAzureRmStorageAccountName: '$(stgname)'
+              backendAzureRmContainerName: '$(containername)'
+              backendAzureRmKey: '$(statefile)'
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(workingDir)'
+              environmentServiceNameAzureRM: '$(svc)'   
