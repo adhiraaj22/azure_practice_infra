@@ -7,20 +7,7 @@ variable "rgs" {
   }))
 }
 
-variable "network" {
-  type = map(obects({
-    name          = string
-    location      = string
-    rg_name       = string
-    address_space = list(string)
-    tags          = optional(string)
-    subnets = optional(list(object({
-      name             = string
-      address_prefixes = list(string)
-    }))) }
-  ))
-}
-
+variable "network" {}
 variable "public_ips" {}
 variable "key_vault" {}
 variable "vms" {}
