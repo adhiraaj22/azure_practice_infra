@@ -135,7 +135,7 @@ sql_database = {
 
 stas = {
   sta001 = {
-    name                     = "stastate"
+    name                     = "stastatemowgli"
     location                 = "centralindia"
     rg_name                  = "rg-dev-001"
     account_tier             = "Standard"

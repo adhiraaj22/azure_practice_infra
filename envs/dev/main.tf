@@ -33,7 +33,9 @@ module "compute" {
 }
 
 module "sql_servers" {
-  depends_on  = [module.resource_group]
+  depends_on = [
+    module.resource_group,
+  module.key_vault]
   source      = "../../modules/azurerm_sql_server"
   sql_servers = var.sql_servers
 }
