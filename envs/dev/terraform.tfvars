@@ -63,6 +63,7 @@ key_vault = {
   }
 }
 
+
 vms = {
   vm001 = {
     nic_name    = "nic-f-vm-001"
