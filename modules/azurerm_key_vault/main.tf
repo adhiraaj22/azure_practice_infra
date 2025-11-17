@@ -33,7 +33,7 @@ data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "key_vault" {
   for_each                    = var.key_vault
-  name                        = each.value.name
+  name                        = each.value.kv_name
   location                    = each.value.location
   resource_group_name         = each.value.rg_name
   enabled_for_disk_encryption = true

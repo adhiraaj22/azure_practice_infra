@@ -1,7 +1,6 @@
 variable "key_vault" {
-
   type = map(object({
-    name     = string
+    kv_name  = string
     location = string
     rg_name  = string
   }))
