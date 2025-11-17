@@ -103,14 +103,12 @@ vms = {
 
 sql_servers = {
   sql_server001 = {
-    name                         = "sql_server-dev-001"
-    rg_name                      = "rg-dev-001"
-    location                     = "centralindia"
-    version                      = "12.0"
-    administrator_login          = ""
-    administrator_login_password = ""
-    minimum_tls_version          = "1.2"
-
+    name                = "sql_server-dev-001"
+    rg_name             = "rg-dev-001"
+    location            = "centralindia"
+    version             = "12.0"
+    minimum_tls_version = "1.2"
+    kv_name             = "kv-dev-001"
     tags = {
       env = "dev"
     }
@@ -122,14 +120,16 @@ sql_database = {
     name         = "sql_database-dev-001"
     collation    = "SQL_Latin1_General_CP1_CI_AS"
     license_type = "LicenseIncluded"
-    max_size_gb  = "2"
+    max_size_gb  = 2
     sku_name     = "S0"
     enclave_type = "VBS"
     tags = {
       env = "dev"
     }
+    server_id = "" # leave blank, we will override in main.tf
   }
 }
+
 
 
 
