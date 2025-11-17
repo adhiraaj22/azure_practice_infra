@@ -41,18 +41,13 @@ module "sql_servers" {
 module "sql_database" {
   depends_on = [module.sql_servers]
   source     = "../../modules/azurerm_sql_database"
-
   sql_database = {
-    sql_database001 = {
-      name         = "sql_database-dev-001"
-      server_id    = module.sql_servers.server_id
-      collation    = "SQL_Latin1_General_CP1_CI_AS"
-      license_type = "LicenseIncluded"
-      max_size_gb  = "2"
-      sku_name     = "S0"
-      enclave_type = "VBS"
-      tags         = { env = "dev" }
-    }
+    sql_database001 = merge(
+      var.sql_database["sql_database001"],
+      {
+        server_id = module.sql_servers.server_ids["sql_server001"]
+      }
+    )
   }
 }
 
