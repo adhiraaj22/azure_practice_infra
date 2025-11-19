@@ -57,7 +57,7 @@ public_ips = {
 
 key_vault = {
   kv001 = {
-    kv_name  = "kv-dev-001"
+    kv_name  = "kv-dev-mowgli-001"
     location = "centralindia"
     rg_name  = "rg-dev-001"
   }
@@ -74,7 +74,7 @@ vms = {
     pip_name    = "pip-dev-001"
     vm_name     = "f-vm-001"
     size        = "Standard_F2"
-    kv_name     = "kv-dev-001"
+    kv_name     = "kv-dev-mowgli-001"
     source_image_reference = {
       publisher = "Canonical"
       offer     = "0001-com-ubuntu-server-jammy"
@@ -91,6 +91,7 @@ vms = {
     pip_name    = "pip-dev-002"
     vm_name     = "b-vm-001"
     size        = "Standard_F2"
+    kv_name     = "kv-dev-mowgli-001"
 
     source_image_reference = {
       publisher = "Canonical"
@@ -108,7 +109,7 @@ sql_servers = {
     location            = "centralindia"
     version             = "12.0"
     minimum_tls_version = "1.2"
-    kv_name             = "kv-dev-001"
+    kv_name             = "kv-dev-mowgli-001"
     tags = {
       env = "dev"
     }
