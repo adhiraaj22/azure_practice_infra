@@ -62,10 +62,10 @@ key_vault = {
   }
 }
 
-vm_username  = "devadmin"
-vm_password  = "DevAdmin$224093"
-sql_username = "sqladmin"
-sql_password = "SqlAdmin$224093"
+vm_username  = "vmUserDev01"
+vm_password  = "Dev$VM2025#Mowgli"
+sql_username = "sqlUserDev01"
+sql_password = "Dev$SQL2025#Mowgli"
 
 
 vms = {
