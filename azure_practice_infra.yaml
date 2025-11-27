@@ -3,9 +3,6 @@ trigger:
     include:
       - main
 
-variables:
-- group: terraform-secrets-dev
-
 pool: practice-pipeline-pool
 
 stages:
@@ -53,13 +50,25 @@ stages:
           - task: ManualValidation@1
             inputs:
               notifyUsers: 'adhiraaj22@gmail.com'
-              approvers: 'Adhiraaj'
+              approvers: 'adhiraaj22@gmail.com'
 
       - job: applyjob
         displayName: "Terraform Apply"
         dependsOn: manualvalidation
         steps:
           - task: TerraformTask@5
+            displayName: "Terraform Init (Release Stage)"
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/envs/dev'
+              backendServiceArm: 'practice-connection'
+              backendAzureRmStorageAccountName: 'tfstatestgdev001'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'dev.terraform.tfstate'
+
+          - task: TerraformTask@5
+            displayName: "Terraform Apply"
             inputs:
               provider: 'azurerm'
               command: 'apply'
