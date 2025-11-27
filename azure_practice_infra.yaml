@@ -40,7 +40,7 @@ stages:
               command: 'plan'
               workingDirectory: '$(System.DefaultWorkingDirectory)/envs/dev'
               environmentServiceNameAzureRM: 'practice-connection'
-              commandOptions: '-detailed-exitcode -lock=false'
+              commandOptions: '-detailed-exitcode -lock=false -var-file="terraform.tfvars"'
 
   - stage: Release
     displayName: "Release"
@@ -64,5 +64,5 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               workingDirectory: '$(System.DefaultWorkingDirectory)/envs/dev'
-              commandOptions: '-auto-approve'
+              commandOptions: '-auto-approve -var-file="terraform.tfvars"'
               environmentServiceNameAzureRM: 'practice-connection'
